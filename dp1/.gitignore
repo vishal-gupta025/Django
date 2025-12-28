@@ -1,0 +1,57 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# ==========================
+# Virtual Environment
+# ==========================
+venv/
+.venv/
+env/
+
+# ==========================
+# Django
+# ==========================
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Migrations (keep __init__.py)
+**/migrations/*
+!**/migrations/__init__.py
+
+# ==========================
+# Environment variables
+# ==========================
+.env
+
+# ==========================
+# IDE / Editor
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================
+# OS files
+# ==========================
+Thumbs.db
+Desktop.ini
+
+# ==========================
+# MySQL
+# ==========================
+*.sql
+
+# ==========================
+# Node (if ever used)
+# ==========================
+node_modules/

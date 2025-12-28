@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block start %}
+
+<div class="d-flex align-items-center justify-content-center" style="min-height:65vh;">
+  <div class="card shadow-lg rounded-4" style="max-width:520px; width:100%;">
+    <div class="card-body p-5 bg-light">
+      <div class="text-center mb-4">
+        <h2 class="h4 mb-1">Welcome back</h2>
+        <p class="text-muted small mb-0">Sign in to continue to Django Practice</p>
+      </div>
+
+      <form method="post" action="{% url 'login_page' %}">
+        {% csrf_token %}
+        {% if messages %}
+          <div>
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} small">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div class="form-floating mb-3">
+          <input type="text" name="username" required class="form-control form-control-lg" id="floatingUsername" placeholder="your username">
+          <label for="floatingUsername">Username</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="password" name="password" required class="form-control form-control-lg" id="floatingPassword" placeholder="Password">
+          <label for="floatingPassword">Password</label>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="rememberCheck">
+            <label class="form-check-label small" for="rememberCheck">Remember me</label>
+          </div>
+          <a href="#" class="small">Forgot?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Sign in</button>
+
+        <div class="text-center small text-muted">
+          Don't have an account? <a href="/register/">Create one</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock%}
