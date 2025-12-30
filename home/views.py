@@ -1,85 +1,100 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login, logout
 from .models import *
-from .models import Profile
+from django.contrib.auth import get_user_model
 from .forms import RegisterForm
+from django.contrib.auth.decorators import login_required
+from .forms import ContactQueryForm
 
+# <--------------------------------------------------------->User model<----------------------------------------------------------------->
 
-# Create your views here.
+User = get_user_model()
 
+# <--------------------------------------------------------->Main page<----------------------------------------------------------------->
+
+@login_required(login_url='login_page')
 def main(request):
     return render(request, 'index.html')
 
+# <--------------------------------------------------------->About Us page<----------------------------------------------------------------->
 
+@login_required(login_url='login_page')
 def about_us(request):
     return render(request, 'about.html')
 
+# <--------------------------------------------------------->Contact Us page<------------------------------------------------------------->
 
-def contect_us(request):
-    return render(request, 'contect.html')
+@login_required(login_url='login_page')
+def contact_us(request):
+    if request.method == "POST":
+        form = ContactQueryForm(request.POST)
 
+        if form.is_valid():
+            contact_query = form.save(commit=False)
+            contact_query.user = request.user 
+            print(contact_query.user)
+            print(contact_query.subject)
+            print(contact_query.message)
+            contact_query.save()
+
+            messages.success(request, "Your message has been sent successfully.")
+            return redirect('contact_us')
+
+        else:
+            messages.error(request, "Please correct the errors below.")
+
+    else:
+        form = ContactQueryForm()
+
+    return render(request, 'contact.html', {'form': form})
+
+
+# <--------------------------------------------------------->Login page<----------------------------------------------------------------->
 
 def login_page(request):
-    if request.method == 'POST':
+    if request.method == "POST" :
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username = username, password = password)
 
-        if user is None:
-            # Try to authenticate by email (case-insensitive)
-            User = get_user_model()
-            try:
-                user_obj = User.objects.get(email__iexact=username)
-                user = authenticate(request, username=user_obj.get_username(), password=password)
-            except User.DoesNotExist:
-                user = None
-
-        if user is not None:
+        if user is None :
+            try :
+                user_obj = User.objects.get(email__iexact = username)
+                user = authenticate(request, username = user_obj.get_username(), password = password)
+            except User.DoesNotExist :
+                messages.error(request, 'Username not found, Try to register first')
+                user = None 
+        if user is not None :
             login(request, user)
-            # ensure a Profile record exists for this user
-            try:
-                Profile.objects.get_or_create(
-                    user=user,
-                    defaults={
-                        'first_name': getattr(user, 'first_name', ''),
-                        'last_name': getattr(user, 'last_name', ''),
-                        'email': getattr(user, 'email', ''),
-                    }
-                )
-            except Exception:
-                pass
-
-            messages.success(request, 'Successfully signed in.')
+            messages.success(request, 'Logged in successfuly!')
             return redirect('name')
-        else:
-            messages.error(request, 'Invalid username/email or password.')
-
+        else :
+            messages.error(request,'Something went wrong, Try again')
     return render(request, 'login.html')
 
+
+# <--------------------------------------------------------->Register page<----------------------------------------------------------------->
+
 def register_page(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # create Profile (avoid storing raw password)
-            try:
-                Profile.objects.get_or_create(
-                    user=user,
-                    defaults={
-                        'first_name': user.first_name,
-                        'last_name': user.last_name,
-                        'email': user.email,
-                    }
-                )
-            except Exception:
-                pass
-
-            messages.success(request, 'Registration successful. Please sign in.')
+            form.save()
+            messages.success(request, "Account created successfully. Please login.")
             return redirect('login_page')
     else:
         form = RegisterForm()
+
+    return render(request, 'register.html', {'form': form}) 
+
+
+# <--------------------------------------------------------->Logout page<----------------------------------------------------------------->
+
+def logout_page(request) :
+    logout(request)
+    messages.success(request, 'Logged out successfuly')
+    return redirect('name')
+
         
-    return render(request, 'register.html', {'form': form})

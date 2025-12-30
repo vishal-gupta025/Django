@@ -1,0 +1,43 @@
+/* Contact page styles */
+.contact-hero {
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 40%, #e6fffa 100%);
+  background-attachment: fixed;
+  padding: 40px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* soft decorative shapes */
+.contact-hero::before {
+  content: '';
+  position: absolute;
+  width: 560px;
+  height: 560px;
+  right: -120px;
+  top: -140px;
+  background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.12), transparent 40%), radial-gradient(circle at 70% 70%, rgba(34,211,238,0.08), transparent 40%);
+  transform: rotate(12deg);
+  border-radius: 40%;
+  pointer-events: none;
+}
+
+.contact-hero .bg-primary {
+  background: linear-gradient(180deg, rgba(59,130,246,0.95), rgba(99,102,241,0.95));
+  box-shadow: 0 8px 30px rgba(15,23,42,0.08);
+}
+
+.contact-card {
+  background: rgba(255,255,255,0.95);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(15,23,42,0.06);
+}
+
+.contact-card .card-body { padding: 2.25rem; }
+
+/* make inputs slightly larger and consistent */
+.form-control-lg { padding: 0.9rem 1rem; }
+
+@media (max-width: 767px) {
+  .contact-hero::before { display: none; }
+}

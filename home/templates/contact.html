@@ -1,0 +1,76 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block start %}
+
+<div class="contact-hero">
+    <link rel="stylesheet" href="{% static 'css/contact.css' %}">
+
+    <div class="container my-5">
+        <div class="row g-4 align-items-center">
+            <div class="col-12 col-lg-5">
+                <div class="bg-primary text-white rounded-4 p-4 shadow-lg">
+                    <h3 class="mb-2">Get in touch</h3>
+                    <p class="mb-4 text-white-50">Have a question or want to work together? Fill out the form and we'll get back to you within 1–2 business days.</p>
+                    <div class="mb-3">
+                        <h6 class="mb-1">Office</h6>
+                        <p class="small mb-2">123 Django Lane<br>Web City, WC 10001</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="mb-1">Email</h6>
+                        <p class="small mb-2">support@django-practice.local</p>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Phone</h6>
+                        <p class="small mb-0">+1 (555) 123-4567</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-7">
+                <div class="card contact-card">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-3">Contact Us</h4>
+                        <p class="text-muted small mb-4">Or send us a message directly using the form below.</p>
+
+                        <form method="post" action="">
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                            {% endif %}
+
+                            {% if request.user.is_authenticated %}
+                                <p class="small text-muted mb-3">Sending as <strong>{{ request.user.get_full_name|default:request.user.username }}</strong> ({{ request.user.email }})</p>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                {{ form.subject.label_tag }}
+                                {{ form.subject }}
+                                {% for error in form.subject.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.message.label_tag }}
+                                {{ form.message }}
+                                {% for error in form.message.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary btn-lg">Send message</button>
+                            </div>
+                        </form>
+
+                        <script src="{% static 'js/contact-form.js' %}"></script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
